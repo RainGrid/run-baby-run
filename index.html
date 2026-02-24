@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Run Baby Run</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="uiOverlay" class="hidden">
+    <div id="enterNameScreen" class="panel hidden">
+      <p class="scoreLabel">Ваш счёт: <span id="finalScore">0</span></p>
+      <label for="playerName">Имя:</label>
+      <input type="text" id="playerName" maxlength="20" placeholder="Введите имя" autocomplete="off">
+      <div class="buttons">
+        <button type="button" id="btnSave">Сохранить</button>
+        <button type="button" id="btnSkip">Пропустить</button>
+      </div>
+    </div>
+  </div>
+  <script src="js/input.js"></script>
+  <script src="js/collision.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/obstacles.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

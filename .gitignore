@@ -1,0 +1,12 @@
+# Plan (internal)
+PLAN.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.idea/
+.vscode/
