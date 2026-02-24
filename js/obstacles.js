@@ -177,10 +177,6 @@
         ctx.fillStyle = o.color;
         ctx.fillRect(x, y, w, h);
       }
-      // Рамка хитбокса для сопоставления с картинками
-      ctx.strokeStyle = '#f00';
-      ctx.lineWidth = 1.5 * scale;
-      ctx.strokeRect(x, y, w, h);
       ctx.restore();
     }
   }
