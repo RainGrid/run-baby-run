@@ -1,6 +1,6 @@
 # Run Baby Run
 
-Браузерный endless runner в стиле Chrome Dino: младенец перепрыгивает препятствия. Прыжок — пробел / стрелка вверх / тап.
+Браузерный endless runner в стиле Chrome Dino.
 
 ## Запуск
 
