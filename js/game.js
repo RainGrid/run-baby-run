@@ -33,6 +33,28 @@
   var btnSave;
   var btnSkip;
 
+  // Параллакс-шарики: мало на экране, с ниточкой и бликом
+  var balloonColors = ['#f8b4c4', '#b4d4f8', '#c4e8b4', '#f8f0b4'];
+  var balloons = (function () {
+    var list = [];
+    // стартовые смещения: шарики распределены по дистанции, но все начинают справа за экраном
+    var startOffsets = [0, 380, 760, 1140];
+    var i;
+    for (i = 0; i < 4; i++) {
+      list.push({
+        startOffset: startOffsets[i],
+        y: 70 + (i * 95) % 190,
+        radius: 18 + (i % 2) * 4,
+        color: balloonColors[i % balloonColors.length]
+      });
+    }
+    return list;
+  })();
+  var BALLOON_PARALLAX = 0.2;
+  var BALLOON_WRAP = BASE_WIDTH + 600;
+  var BALLOON_START_X = BASE_WIDTH + 80; // откуда выплывают справа
+  var BALLOON_DELAY_DIST = 600;
+
   function getScores() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
@@ -153,6 +175,44 @@
 
     ctx.translate(offsetX, offsetY);
     ctx.scale(scale, scale);
+
+    // параллакс воздушные шарики: появляются и двигаются только после дистанции BALLOON_DELAY_DIST
+    var showBalloons = (state === STATE_PLAY || state === STATE_GAMEOVER || state === STATE_ENTER_NAME) && distance >= BALLOON_DELAY_DIST;
+    var balloonDist = showBalloons ? distance - BALLOON_DELAY_DIST : 0;
+    var i, bx, b, by, r, stringLen, hlX, hlY;
+    if (showBalloons) for (i = 0; i < balloons.length; i++) {
+      b = balloons[i];
+      bx = BALLOON_START_X + b.startOffset - balloonDist * BALLOON_PARALLAX;
+      while (bx < -b.radius - 80) bx += BALLOON_WRAP;
+      if (bx > BASE_WIDTH + b.radius + 80) continue;
+      by = b.y;
+      r = b.radius;
+      ctx.globalAlpha = 0.7;
+      // ниточка (тонкая линия вниз, лёгкий изгиб)
+      stringLen = 28 + (i % 3) * 8;
+      ctx.strokeStyle = 'rgba(100,90,80,0.5)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(bx, by + r);
+      ctx.quadraticCurveTo(bx + 4, by + r + stringLen * 0.5, bx + 2, by + r + stringLen);
+      ctx.stroke();
+      // тело шарика
+      ctx.fillStyle = b.color;
+      ctx.beginPath();
+      ctx.arc(bx, by, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // блик
+      hlX = bx - r * 0.35;
+      hlY = by - r * 0.3;
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.beginPath();
+      ctx.ellipse(hlX, hlY, r * 0.35, r * 0.25, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
 
     // floor fill
     ctx.fillStyle = '#ddd5c4';
