@@ -13,9 +13,10 @@
   var BASE_HEIGHT = 400;
   var GROUND_Y = 280;
   var STORAGE_KEY = 'runBabyRunScores';
+  var STORAGE_SECRET = 'rbr#2026!salt';
   var SPEED_START = 300;
-  var SPEED_MAX = 680;
-  var SPEED_RAMP_DIST = 26000;
+  var SPEED_MAX = 980;
+  var SPEED_RAMP_DIST = 36000;
 
   var state = STATE_MENU;
   var score = 0;
@@ -55,17 +56,41 @@
   var BALLOON_START_X = BASE_WIDTH + 80; // откуда выплывают справа
   var BALLOON_DELAY_DIST = 600;
 
+  function simpleHash(str) {
+    var h = 2166136261 >>> 0;
+    var i;
+    for (i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return (h >>> 0).toString(16);
+  }
+
   function getScores() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
+      if (!raw) return [];
+
+      var parsed = JSON.parse(raw);
+
+      if (!parsed || !Array.isArray(parsed.scores) || !parsed.sig) return [];
+
+      var expected = simpleHash(STORAGE_SECRET + JSON.stringify(parsed.scores));
+
+      if (expected !== parsed.sig) return [];
+
+      return parsed.scores;
     } catch (e) {}
     return [];
   }
 
   function saveScores(arr) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      var payload = {
+        scores: arr,
+        sig: simpleHash(STORAGE_SECRET + JSON.stringify(arr))
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch (e) {}
   }
 
