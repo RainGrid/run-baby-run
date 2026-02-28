@@ -239,20 +239,23 @@
       ctx.globalAlpha = 1;
     }
 
-    // floor fill
+    var floorLeft = Math.min(-offsetX / scale, 0);
+    var floorRight = Math.max((cw - offsetX) / scale, BASE_WIDTH + 200);
+    var floorBottom = Math.max((ch - offsetY) / scale, BASE_HEIGHT);
+    var floorW = floorRight - floorLeft;
+    var floorH = floorBottom - GROUND_Y;
     ctx.fillStyle = '#ddd5c4';
-    ctx.fillRect(0, GROUND_Y, BASE_WIDTH + 200, BASE_HEIGHT - GROUND_Y);
+    ctx.fillRect(floorLeft, GROUND_Y, floorW, floorH);
     var stripe;
-    for (stripe = 0; stripe < BASE_WIDTH + 200; stripe += 24) {
+    for (stripe = Math.floor(floorLeft / 24) * 24; stripe < floorRight; stripe += 24) {
       ctx.fillStyle = 'rgba(196,181,154,0.25)';
-      ctx.fillRect(stripe, GROUND_Y, 8, BASE_HEIGHT - GROUND_Y);
+      ctx.fillRect(stripe, GROUND_Y, 8, floorH);
     }
-    // ground line
     ctx.strokeStyle = '#c4b59a';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(0, GROUND_Y);
-    ctx.lineTo(BASE_WIDTH + 100, GROUND_Y);
+    ctx.moveTo(floorLeft, GROUND_Y);
+    ctx.lineTo(floorRight, GROUND_Y);
     ctx.stroke();
 
     if (state === STATE_MENU) {

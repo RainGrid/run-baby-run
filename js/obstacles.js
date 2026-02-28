@@ -23,7 +23,7 @@
     },
     {
       id: 'rattle',
-      width: 24,
+      width: 32,
       height: 32,
       offsetY: 0,
       color: '#9bd',
